@@ -9,6 +9,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
+      dir(RIGHT),
       gameOver(false)
 {
     setFixedSize(640, 480);

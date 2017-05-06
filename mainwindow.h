@@ -22,7 +22,7 @@ protected:
 
 private:
     ZZnake *snake;
-    Direction dir = RIGHT;
+    Direction dir;
     int food[2];
     bool gameOver;
 
