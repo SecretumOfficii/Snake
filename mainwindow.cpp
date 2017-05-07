@@ -68,7 +68,41 @@ void MainWindow::drawSnake(QPainter *painter)
     painter->save();
     painter->setPen(pen);
     painter->setBrush(brush);
-    for(const Node *node = snake->getHead(); node != nullptr; node = node->prev)
+
+    const Node *node = snake->getHead();
+    painter->drawEllipse(node->x * 20, node->y * 20, 20, 20);
+
+    brush.setColor(Qt::white);
+    pen.setColor(Qt::black);
+    pen.setWidth(1);
+    painter->setPen(pen);
+    painter->setBrush(brush);
+    switch (dir) {
+    case UP:
+        painter->drawEllipse(node->x * 20 + 5, node->y * 20 + 5, 5, 5);
+        painter->drawEllipse(node->x * 20 + 10, node->y * 20 + 5, 5, 5);
+        break;
+    case DOWN:
+        painter->drawEllipse(node->x * 20 + 5, node->y * 20 + 15, 5, 5);
+        painter->drawEllipse(node->x * 20 + 10, node->y * 20 + 15, 5, 5);
+        break;
+    case LEFT:
+        painter->drawEllipse(node->x * 20 + 5, node->y * 20 + 5, 5, 5);
+        painter->drawEllipse(node->x * 20 + 5, node->y * 20 + 10, 5, 5);
+        break;
+    case RIGHT:
+        painter->drawEllipse(node->x * 20 + 10, node->y * 20 + 5, 5, 5);
+        painter->drawEllipse(node->x * 20 + 10, node->y * 20 + 10, 5, 5);
+        break;
+    }
+
+    brush.setColor(Qt::blue);
+    pen.setColor(Qt::gray);
+    pen.setWidth(5);
+    painter->setPen(pen);
+    painter->setBrush(brush);
+
+    for( node = node->prev; node != nullptr; node = node->prev)
     {
         painter->drawEllipse(node->x * 20, node->y * 20, 20, 20);
     }
