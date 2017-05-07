@@ -101,22 +101,39 @@ void MainWindow::timerEvent(QTimerEvent *)
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)
 {
+    Direction tmpDir;
     switch (ev->key())
     {
     case Qt::Key_Up:
-        dir = UP;
+        tmpDir = UP;
+        if (dir != DOWN)
+        {
+            dir = tmpDir;
+        }
         break;
 
     case Qt::Key_Down:
-        dir = DOWN;
+        tmpDir = DOWN;
+        if (dir != UP)
+        {
+            dir = tmpDir;
+        }
         break;
 
     case Qt::Key_Left:
-        dir = LEFT;
+        tmpDir = LEFT;
+        if (dir != RIGHT)
+        {
+            dir = tmpDir;
+        }
         break;
 
     case Qt::Key_Right:
-        dir = RIGHT;
+        tmpDir = RIGHT;
+        if (dir != LEFT)
+        {
+            dir = tmpDir;
+        }
         break;
 
     case Qt::Key_Escape:
