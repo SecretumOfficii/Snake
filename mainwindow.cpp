@@ -94,6 +94,7 @@ void MainWindow::timerEvent(QTimerEvent *)
 {
     if(!gameOver)
     {
+        KeyPressFlag = true;
         snake->move(dir, food);
     }
     update();
@@ -102,42 +103,46 @@ void MainWindow::timerEvent(QTimerEvent *)
 void MainWindow::keyPressEvent(QKeyEvent *ev)
 {
     Direction tmpDir;
-    switch (ev->key())
+    if (KeyPressFlag)
     {
-    case Qt::Key_Up:
-        tmpDir = UP;
-        if (dir != DOWN)
+        switch (ev->key())
         {
-            dir = tmpDir;
-        }
-        break;
+        case Qt::Key_Up:
+            tmpDir = UP;
+            if (dir != DOWN)
+            {
+                dir = tmpDir;
+            }
+            break;
 
-    case Qt::Key_Down:
-        tmpDir = DOWN;
-        if (dir != UP)
-        {
-            dir = tmpDir;
-        }
-        break;
+        case Qt::Key_Down:
+            tmpDir = DOWN;
+            if (dir != UP)
+            {
+                dir = tmpDir;
+            }
+            break;
 
-    case Qt::Key_Left:
-        tmpDir = LEFT;
-        if (dir != RIGHT)
-        {
-            dir = tmpDir;
-        }
-        break;
+        case Qt::Key_Left:
+            tmpDir = LEFT;
+            if (dir != RIGHT)
+            {
+                dir = tmpDir;
+            }
+            break;
 
-    case Qt::Key_Right:
-        tmpDir = RIGHT;
-        if (dir != LEFT)
-        {
-            dir = tmpDir;
-        }
-        break;
+        case Qt::Key_Right:
+            tmpDir = RIGHT;
+            if (dir != LEFT)
+            {
+                dir = tmpDir;
+            }
+            break;
 
-    case Qt::Key_Escape:
-        close();
+        case Qt::Key_Escape:
+            close();
+        }
+        KeyPressFlag = false;
     }
 }
 

@@ -23,6 +23,7 @@ protected:
 private:
     ZZnake *snake;
     Direction dir;
+    bool KeyPressFlag;
     int food[2];
     bool gameOver;
 
