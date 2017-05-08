@@ -21,6 +21,7 @@ protected:
     void mousePressEvent(QMouseEvent *ev);
 
 private:
+    int border;
     ZZnake *snake;
     Direction dir;
     int food[2];
@@ -29,6 +30,7 @@ private:
     void drawSnake(QPainter *painter);
     void drawFood(QPainter *painter);
     void makeFood();
+    void drawEyes(QPainter *painter);
     void restart();
 
 public slots:

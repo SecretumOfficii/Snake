@@ -11,6 +11,7 @@ struct Node
     Node *prev;
 };
 
+
 enum Direction
 {
     UP,

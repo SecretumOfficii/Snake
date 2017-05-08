@@ -36,19 +36,19 @@ void ZZnake::move(Direction dir, int food[])
     head = n;
     if(head->x >= 0)
     {
-        head->x %= 32;
+        head->x %= 31;
     }
     else
     {
-        head->x = 32 + head->x;
+        head->x = 31 + head->x;
     }
     if(head->y >= 0)
     {
-        head->y %= 24;
+        head->y %= 23;
     }
     else
     {
-        head->y = 24 + head->y;
+        head->y = 23 + head->y;
     }
     if((head->x == food[0]) && (head->y == food[1]))
     {
@@ -68,3 +68,4 @@ void ZZnake::move(Direction dir, int food[])
         }
     }
 }
+

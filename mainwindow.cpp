@@ -12,13 +12,14 @@ MainWindow::MainWindow(QWidget *parent)
       dir(RIGHT),
       gameOver(false)
 {
+    border = 10;
     setFixedSize(640, 480);
     snake = new ZZnake(this);
     srand(time(NULL));
     makeFood();
     connect(snake, &ZZnake::omnonon, this, &MainWindow::eaten);
     connect(snake, &ZZnake::bite, this, &MainWindow::biten);
-    startTimer(100);
+    startTimer(300);
 }
 
 MainWindow::~MainWindow()
@@ -31,14 +32,17 @@ void MainWindow::paintEvent(QPaintEvent *)
     QPainter painter(this);
     QPen pen;
     QBrush brush;
-    painter.setPen(Qt::NoPen);
+    pen.setColor(QColor(128, 128, 0));
+    pen.setWidth(border);
     brush.setColor(QColor(181, 230, 29));
     brush.setStyle(Qt::SolidPattern);
     painter.setPen(pen);
     painter.setBrush(brush);
-    painter.drawRect(0, 0, width(), height());
+    painter.drawRect(border / 2, border / 2, width() - border, height() - border);
     drawSnake(&painter);
     drawFood(&painter);
+    drawEyes(&painter);
+
     if(gameOver)
     {
         QFont font;
@@ -62,15 +66,15 @@ void MainWindow::drawSnake(QPainter *painter)
     QPen pen;
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
-    brush.setColor(Qt::blue);
-    pen.setColor(Qt::gray);
-    pen.setWidth(5);
+    brush.setColor(QColor(228, 155, 15));
+    pen.setColor(QColor(178, 34, 34));
+    pen.setWidth(4);
     painter->save();
     painter->setPen(pen);
     painter->setBrush(brush);
     for(const Node *node = snake->getHead(); node != nullptr; node = node->prev)
     {
-        painter->drawEllipse(node->x * 20, node->y * 20, 20, 20);
+        painter->drawEllipse(node->x * 20 + border, node->y * 20 + border, 20, 20);
     }
     painter->restore();
 }
@@ -80,13 +84,57 @@ void MainWindow::drawFood(QPainter *painter)
     QPen pen;
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
-    brush.setColor(Qt::red);
-    pen.setColor(Qt::yellow);
-    pen.setWidth(5);
+    brush.setColor(Qt::blue);
+    pen.setColor(QColor(255 ,117, 24));
+    pen.setWidth(4);
     painter->setPen(pen);
     painter->setBrush(brush);
     painter->save();
-    painter->drawRect(food[0] * 20, food[1] * 20, 20, 20);
+    painter->drawRect(food[0] * 20 + border, food[1] * 20 + border, 20, 20);
+    painter->restore();
+}
+
+void MainWindow::drawEyes(QPainter *painter)
+{
+    int r = 7;
+    QPen pen;
+    QBrush brush;
+    brush.setStyle(Qt::SolidPattern);
+    brush.setColor(Qt::black);
+    pen.setColor(Qt::white);
+    pen.setWidth(3);
+    painter->save();
+    painter->setBrush(brush);
+    painter->setPen(pen);
+    switch (dir) {
+    case UP:
+        painter->drawEllipse(snake->getHead()->x * 20 + border,
+                             snake->getHead()->y * 20 + border, r, r);
+        painter->drawEllipse(snake->getHead()->x * 20 + (20 - r) + border,
+                             snake->getHead()->y * 20 + border, r, r);
+        break;
+
+    case DOWN:
+        painter->drawEllipse(snake->getHead()->x * 20 + border,
+                             snake->getHead()->y * 20 + (20-r) + border, r, r);
+        painter->drawEllipse(snake->getHead()->x * 20 + (20-r) + border,
+                             snake->getHead()->y * 20 + (20-r) + border, r, r);
+        break;
+
+    case LEFT:
+        painter->drawEllipse(snake->getHead()->x * 20 + border,
+                             snake->getHead()->y * 20 + border, r, r);
+        painter->drawEllipse(snake->getHead()->x * 20 + border,
+                             snake->getHead()->y * 20 + (20-r) + border, r, r);
+        break;
+
+    case RIGHT:
+        painter->drawEllipse(snake->getHead()->x * 20 + (20-r) + border,
+                             snake->getHead()->y * 20 + border, r, r);
+        painter->drawEllipse(snake->getHead()->x * 20 + (20-r) + border,
+                             snake->getHead()->y * 20 + (20-r) + border, r, r);
+        break;
+    }
     painter->restore();
 }
 
@@ -130,8 +178,8 @@ void MainWindow::makeFood()
     do
     {
         ok = true;
-        food[0] = rand() % 32;
-        food[1] = rand() % 24;
+        food[0] = rand() % 31;
+        food[1] = rand() % 23;
         for(const Node *node = snake->getHead(); node != nullptr; node = node->prev)
         {
             if((node->x == food[0]) && (node->y == food[1]))
