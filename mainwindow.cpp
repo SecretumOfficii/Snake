@@ -39,6 +39,8 @@ void MainWindow::paintEvent(QPaintEvent *)
     painter.drawRect(0, 0, width(), height());
     drawSnake(&painter);
     drawFood(&painter);
+    QString tmp;
+    tmp = count;
     if(gameOver)
     {
         QFont font;
@@ -46,6 +48,10 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.setFont(font);
         pen.setColor(Qt::red);
         painter.setPen(pen);
+        QString tmp = "score: ";
+        tmp += QString::number(count);
+        painter.drawText(width() / 2 - 200, height() / 2 - 200,
+                         400, 100, Qt::AlignCenter, tmp);
         painter.drawText(0, 0, width(), height(), Qt::AlignCenter, "Game Over!");
         brush.setColor(QColor(194, 71, 220));
         painter.setBrush(brush);
@@ -202,6 +208,7 @@ void MainWindow::makeFood()
 
 void MainWindow::eaten()
 {
+    count++;
     makeFood();
 }
 
@@ -212,6 +219,7 @@ void MainWindow::biten()
 
 void MainWindow::restart()
 {
+    count = 0;
     gameOver = false;
     delete snake;
     snake = new ZZnake(this);
