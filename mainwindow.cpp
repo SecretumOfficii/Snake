@@ -3,28 +3,45 @@
 #include <QPainter>
 #include <QKeyEvent>
 #include <QFont>
+#include <QMediaPlayer>
 #include <cstdlib>
 #include <ctime>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
-      dir(RIGHT),
-      gameOver(false)
+      snake(nullptr)
 {
     border = 10;
-    setFixedSize(640, 480);
-    snake = new ZZnake(this);
+    unicorn.load(":/images/food.png");
+    setFixedSize(640, 520);
     srand(time(NULL));
-    makeFood();
-    connect(snake, &ZZnake::omnonon, this, &MainWindow::eaten);
-    connect(snake, &ZZnake::bite, this, &MainWindow::biten);
+    restart();
+    player = new QMediaPlayer(this);
+    player->setMedia(QUrl::fromLocalFile("../Snake/bite.mp3"));
+    player->setVolume(80);
     startTimer(100);
 }
 
 MainWindow::~MainWindow()
 {
 
+}
+
+void MainWindow::restart()
+{
+    gameOver = false;
+    score = 0;
+    length = 4;
+    if(snake != nullptr)
+    {
+        delete snake;
+    }
+    snake = new ZZnake(this);
+    connect(snake, &ZZnake::omnonon, this, &MainWindow::eaten);
+    connect(snake, &ZZnake::bite, this, &MainWindow::biten);
+    dir = RIGHT;
+    makeFood();
 }
 
 void MainWindow::paintEvent(QPaintEvent *)
@@ -38,12 +55,29 @@ void MainWindow::paintEvent(QPaintEvent *)
     brush.setStyle(Qt::SolidPattern);
     painter.setPen(pen);
     painter.setBrush(brush);
-    painter.drawRect(border / 2, border / 2, width() - border, height() - border);
+    painter.translate(0, 40);
+    painter.drawRect(border / 2, border / 2 - 40, width() - border, 40 + border / 2);
+    painter.drawRect(border / 2, border / 2, width() - border, height() - border - 40);
     drawSnake(&painter);
     drawFood(&painter);
     drawEyes(&painter);
-    QString tmp;
-    tmp = count;
+    QString scoreStr = "Score: ";
+    scoreStr += QString::number(score);
+    QFont font;
+    font.setPointSize(16);
+    painter.setFont(font);
+    pen.setColor(QColor(16, 69, 3));
+    painter.setPen(pen);
+    painter.drawText(border * 2, -40,
+                     640 - border * 2, 40 + border / 2,
+                     Qt::AlignLeft | Qt::AlignVCenter, scoreStr);
+    QString lengthStr = "Length: ";
+    lengthStr += QString::number(length);
+    painter.drawText(border * 2, -40,
+                     640 - border * 4, 40 + border / 2,
+                     Qt::AlignRight | Qt::AlignVCenter, lengthStr);
+
+
     if(gameOver)
     {
         QFont font;
@@ -51,10 +85,6 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.setFont(font);
         pen.setColor(Qt::red);
         painter.setPen(pen);
-        QString tmp = "score: ";
-        tmp += QString::number(count);
-        painter.drawText(width() / 2 - 200, height() / 2 - 200,
-                         400, 100, Qt::AlignCenter, tmp);
         painter.drawText(0, 0, width(), height(), Qt::AlignCenter, "Game Over!");
         brush.setColor(QColor(194, 71, 220));
         painter.setBrush(brush);
@@ -90,14 +120,21 @@ void MainWindow::drawFood(QPainter *painter)
     QPen pen;
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
-    brush.setColor(Qt::blue);
-    pen.setColor(QColor(255 ,117, 24));
-    pen.setWidth(4);
-    painter->setPen(pen);
-    painter->setBrush(brush);
-    painter->save();
-    painter->drawRect(food[0] * 20 + border, food[1] * 20 + border, 20, 20);
-    painter->restore();
+    if(food[2] < 8)
+    {
+        brush.setColor(Qt::blue);
+        pen.setColor(QColor(255 ,117, 24));
+        pen.setWidth(4);
+        painter->save();
+        painter->setPen(pen);
+        painter->setBrush(brush);
+        painter->drawRect(food[0] * 20 + border, food[1] * 20 + border, 20, 20);
+        painter->restore();
+    }
+    else
+    {
+        painter->drawImage(food[0] * 20 + border, food[1] * 20 + border, unicorn);
+    }
 }
 
 void MainWindow::drawEyes(QPainter *painter)
@@ -208,6 +245,7 @@ void MainWindow::makeFood()
         ok = true;
         food[0] = rand() % 31;
         food[1] = rand() % 23;
+        food[2] = rand() % 10;
         for(const Node *node = snake->getHead(); node != nullptr; node = node->prev)
         {
             if((node->x == food[0]) && (node->y == food[1]))
@@ -222,25 +260,19 @@ void MainWindow::makeFood()
 
 void MainWindow::eaten()
 {
-    count++;
+    player->play();
+    score += 10;
+    if(food[2] >= 8)
+    {
+        score += 90;
+    }
+    length++;
     makeFood();
 }
 
 void MainWindow::biten()
 {
     gameOver = true;
-}
-
-void MainWindow::restart()
-{
-    count = 0;
-    gameOver = false;
-    delete snake;
-    snake = new ZZnake(this);
-    connect(snake, &ZZnake::omnonon, this, &MainWindow::eaten);
-    connect(snake, &ZZnake::bite, this, &MainWindow::biten);
-    dir = RIGHT;
-    makeFood();
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *ev)

@@ -6,6 +6,8 @@
 
 // 32 * 24
 
+class QMediaPlayer;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -25,9 +27,13 @@ private:
     ZZnake *snake;
     Direction dir;
     bool KeyPressFlag;
-    int food[2];
+    int food[3];
     bool gameOver;
-    int count = 0;
+    int score;
+    int length;
+
+    QImage unicorn;
+    QMediaPlayer *player;
 
     void drawSnake(QPainter *painter);
     void drawFood(QPainter *painter);
