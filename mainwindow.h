@@ -24,8 +24,10 @@ private:
     int border;
     ZZnake *snake;
     Direction dir;
+    bool KeyPressFlag;
     int food[2];
     bool gameOver;
+    int count = 0;
 
     void drawSnake(QPainter *painter);
     void drawFood(QPainter *painter);

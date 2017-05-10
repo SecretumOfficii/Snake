@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     makeFood();
     connect(snake, &ZZnake::omnonon, this, &MainWindow::eaten);
     connect(snake, &ZZnake::bite, this, &MainWindow::biten);
-    startTimer(300);
+    startTimer(100);
 }
 
 MainWindow::~MainWindow()
@@ -42,7 +42,8 @@ void MainWindow::paintEvent(QPaintEvent *)
     drawSnake(&painter);
     drawFood(&painter);
     drawEyes(&painter);
-
+    QString tmp;
+    tmp = count;
     if(gameOver)
     {
         QFont font;
@@ -50,6 +51,10 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.setFont(font);
         pen.setColor(Qt::red);
         painter.setPen(pen);
+        QString tmp = "score: ";
+        tmp += QString::number(count);
+        painter.drawText(width() / 2 - 200, height() / 2 - 200,
+                         400, 100, Qt::AlignCenter, tmp);
         painter.drawText(0, 0, width(), height(), Qt::AlignCenter, "Game Over!");
         brush.setColor(QColor(194, 71, 220));
         painter.setBrush(brush);
@@ -72,6 +77,7 @@ void MainWindow::drawSnake(QPainter *painter)
     painter->save();
     painter->setPen(pen);
     painter->setBrush(brush);
+
     for(const Node *node = snake->getHead(); node != nullptr; node = node->prev)
     {
         painter->drawEllipse(node->x * 20 + border, node->y * 20 + border, 20, 20);
@@ -142,6 +148,7 @@ void MainWindow::timerEvent(QTimerEvent *)
 {
     if(!gameOver)
     {
+        KeyPressFlag = true;
         snake->move(dir, food);
     }
     update();
@@ -149,26 +156,47 @@ void MainWindow::timerEvent(QTimerEvent *)
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)
 {
-    switch (ev->key())
+    Direction tmpDir;
+    if (KeyPressFlag)
     {
-    case Qt::Key_Up:
-        dir = UP;
-        break;
+        switch (ev->key())
+        {
+        case Qt::Key_Up:
+            tmpDir = UP;
+            if (dir != DOWN)
+            {
+                dir = tmpDir;
+            }
+            break;
 
-    case Qt::Key_Down:
-        dir = DOWN;
-        break;
+        case Qt::Key_Down:
+            tmpDir = DOWN;
+            if (dir != UP)
+            {
+                dir = tmpDir;
+            }
+            break;
 
-    case Qt::Key_Left:
-        dir = LEFT;
-        break;
+        case Qt::Key_Left:
+            tmpDir = LEFT;
+            if (dir != RIGHT)
+            {
+                dir = tmpDir;
+            }
+            break;
 
-    case Qt::Key_Right:
-        dir = RIGHT;
-        break;
+        case Qt::Key_Right:
+            tmpDir = RIGHT;
+            if (dir != LEFT)
+            {
+                dir = tmpDir;
+            }
+            break;
 
-    case Qt::Key_Escape:
-        close();
+        case Qt::Key_Escape:
+            close();
+        }
+        KeyPressFlag = false;
     }
 }
 
@@ -194,6 +222,7 @@ void MainWindow::makeFood()
 
 void MainWindow::eaten()
 {
+    count++;
     makeFood();
 }
 
@@ -204,6 +233,7 @@ void MainWindow::biten()
 
 void MainWindow::restart()
 {
+    count = 0;
     gameOver = false;
     delete snake;
     snake = new ZZnake(this);
