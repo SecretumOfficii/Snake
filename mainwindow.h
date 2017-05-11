@@ -32,6 +32,8 @@ private:
     bool gameOver;
     int score;
     int length;
+    int speed;
+    int timer;
 
     QImage unicorn;
     QMediaPlayer *player;

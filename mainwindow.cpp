@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     player = new QMediaPlayer(this);
     player->setMedia(QUrl::fromLocalFile("../Snake/bite.mp3"));
     player->setVolume(80);
-    startTimer(100);
+    startTimer(10);
 }
 
 MainWindow::~MainWindow()
@@ -30,6 +30,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::restart()
 {
+    timer = 0;
+    speed = 10;
     gameOver = false;
     score = 0;
     length = 4;
@@ -185,8 +187,13 @@ void MainWindow::timerEvent(QTimerEvent *)
 {
     if((!gameOver) and (!pauseFlag))
     {
-        KeyPressFlag = true;
-        snake->move(dir, food);
+        if (speed <= timer)
+        {
+            KeyPressFlag = true;
+            snake->move(dir, food);
+            timer = 0;
+        }
+        timer++;
     }
     update();
 }
@@ -202,6 +209,7 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
     {
         switch (key)
         {
+        case Qt::Key_W:
         case Qt::Key_Up:
             if (dir != DOWN)
             {
@@ -209,6 +217,7 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
             }
             break;
 
+        case Qt::Key_S:
         case Qt::Key_Down:
             if (dir != UP)
             {
@@ -216,6 +225,7 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
             }
             break;
 
+        case Qt::Key_A:
         case Qt::Key_Left:
             if (dir != RIGHT)
             {
@@ -223,10 +233,21 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
             }
             break;
 
+        case Qt::Key_D:
         case Qt::Key_Right:
             if (dir != LEFT)
             {
                 dir = RIGHT;
+            }
+            break;
+
+        case 44:
+            speed +=1;
+            break;
+
+        case 46:
+            if (speed > 1){
+                speed -=1;
             }
             break;
 
@@ -261,10 +282,10 @@ void MainWindow::makeFood()
 void MainWindow::eaten()
 {
     player->play();
-    score += 10;
+    score +=  20 - speed;
     if(food[2] >= 8)
     {
-        score += 90;
+        score += 9 * (20 - speed);
     }
     length++;
     makeFood();
