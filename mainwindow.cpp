@@ -33,6 +33,7 @@ void MainWindow::restart()
     gameOver = false;
     score = 0;
     length = 4;
+    pauseFlag = false;
     if(snake != nullptr)
     {
         delete snake;
@@ -106,8 +107,7 @@ void MainWindow::drawSnake(QPainter *painter)
     pen.setWidth(4);
     painter->save();
     painter->setPen(pen);
-    painter->setBrush(brush);
-
+    painter->setBrush(brush);   
     for(const Node *node = snake->getHead(); node != nullptr; node = node->prev)
     {
         painter->drawEllipse(node->x * 20 + border, node->y * 20 + border, 20, 20);
@@ -183,7 +183,7 @@ void MainWindow::drawEyes(QPainter *painter)
 
 void MainWindow::timerEvent(QTimerEvent *)
 {
-    if(!gameOver)
+    if((!gameOver) and (!pauseFlag))
     {
         KeyPressFlag = true;
         snake->move(dir, food);
@@ -193,40 +193,40 @@ void MainWindow::timerEvent(QTimerEvent *)
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)
 {
-    Direction tmpDir;
+    int key = ev->key();
+    if  (key == Qt::Key_Space){
+        pauseFlag = !pauseFlag;
+    }
+
     if (KeyPressFlag)
     {
-        switch (ev->key())
+        switch (key)
         {
         case Qt::Key_Up:
-            tmpDir = UP;
             if (dir != DOWN)
             {
-                dir = tmpDir;
+                dir = UP;
             }
             break;
 
         case Qt::Key_Down:
-            tmpDir = DOWN;
             if (dir != UP)
             {
-                dir = tmpDir;
+                dir = DOWN;
             }
             break;
 
         case Qt::Key_Left:
-            tmpDir = LEFT;
             if (dir != RIGHT)
             {
-                dir = tmpDir;
+                dir = LEFT;
             }
             break;
 
         case Qt::Key_Right:
-            tmpDir = RIGHT;
             if (dir != LEFT)
             {
-                dir = tmpDir;
+                dir = RIGHT;
             }
             break;
 

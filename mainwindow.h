@@ -27,6 +27,7 @@ private:
     ZZnake *snake;
     Direction dir;
     bool KeyPressFlag;
+    bool pauseFlag;
     int food[3];
     bool gameOver;
     int score;
