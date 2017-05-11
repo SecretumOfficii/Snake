@@ -74,6 +74,13 @@ void MainWindow::paintEvent(QPaintEvent *)
     painter.drawText(border * 2, -40,
                      640 - border * 2, 40 + border / 2,
                      Qt::AlignLeft | Qt::AlignVCenter, scoreStr);
+
+    QString speedStr = "Speed: ";
+    speedStr += QString::number(20 - speed);
+    painter.drawText(border * 2, -40,
+                     640 - border * 2, 40 + border / 2,
+                     Qt::AlignCenter | Qt::AlignVCenter, speedStr);
+
     QString lengthStr = "Length: ";
     lengthStr += QString::number(length);
     painter.drawText(border * 2, -40,
@@ -211,43 +218,69 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
         {
         case Qt::Key_W:
         case Qt::Key_Up:
-            if (dir != DOWN)
+            switch (dir)
             {
+            case LEFT:
+            case RIGHT:
                 dir = UP;
+                break;
+            case DOWN:
+                speed+=1;
+                break;
+            case UP:
+                if (speed > 1){speed -=1;}
+                break;
             }
             break;
 
         case Qt::Key_S:
         case Qt::Key_Down:
-            if (dir != UP)
+            switch (dir)
             {
+            case LEFT:
+            case RIGHT:
                 dir = DOWN;
+                break;
+            case UP:
+                speed+=1;
+                break;
+            case DOWN:
+                if (speed > 1){speed -=1;}
+                break;
             }
             break;
 
         case Qt::Key_A:
         case Qt::Key_Left:
-            if (dir != RIGHT)
+            switch (dir)
             {
+            case UP:
+            case DOWN:
                 dir = LEFT;
+                break;
+            case RIGHT:
+                speed+=1;
+                break;
+            case LEFT:
+                if (speed > 1){speed -=1;}
+                break;
             }
             break;
 
         case Qt::Key_D:
         case Qt::Key_Right:
-            if (dir != LEFT)
+            switch (dir)
             {
-                dir = RIGHT;
-            }
-            break;
-
-        case 44:
-            speed +=1;
-            break;
-
-        case 46:
-            if (speed > 1){
-                speed -=1;
+                case UP:
+                case DOWN:
+                    dir = RIGHT;
+                    break;
+                case LEFT:
+                    speed+=1;
+                    break;
+                case RIGHT:
+                    if (speed > 1){speed -=1;}
+                    break;
             }
             break;
 
