@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/images">
         <file>food.png</file>
+        <file>priseFood.png</file>
     </qresource>
     <qresource prefix="/sound">
         <file>bite.mp3</file>

@@ -13,14 +13,15 @@ MainWindow::MainWindow(QWidget *parent)
       snake(nullptr)
 {
     border = 10;
-    unicorn.load(":/images/food.png");
+    Food.load(":/images/food.png");
+    priseFood.load(":/images/priseFood.png");
     setFixedSize(640, 520);
     srand(time(NULL));
     restart();
     player = new QMediaPlayer(this);
-    player->setMedia(QUrl::fromLocalFile("../Snake/bite.mp3"));
+    player->setMedia(QUrl::fromLocalFile("../bite.mp3"));
     player->setVolume(80);
-    startTimer(100);
+    startTimer(200);
 }
 
 MainWindow::~MainWindow()
@@ -117,23 +118,15 @@ void MainWindow::drawSnake(QPainter *painter)
 
 void MainWindow::drawFood(QPainter *painter)
 {
-    QPen pen;
-    QBrush brush;
-    brush.setStyle(Qt::SolidPattern);
     if(food[2] < 8)
     {
-        brush.setColor(Qt::blue);
-        pen.setColor(QColor(255 ,117, 24));
-        pen.setWidth(4);
         painter->save();
-        painter->setPen(pen);
-        painter->setBrush(brush);
-        painter->drawRect(food[0] * 20 + border, food[1] * 20 + border, 20, 20);
+        painter->drawImage(food[0] * 20 + border - 5,food [1] * 20 + border - 5, Food);
         painter->restore();
     }
     else
     {
-        painter->drawImage(food[0] * 20 + border, food[1] * 20 + border, unicorn);
+        painter->drawImage(food[0] * 20 + border - 5, food[1] * 20 + border - 5, priseFood);
     }
 }
 

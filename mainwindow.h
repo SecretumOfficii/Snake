@@ -32,7 +32,8 @@ private:
     int score;
     int length;
 
-    QImage unicorn;
+    QImage Food;
+    QImage priseFood;
     QMediaPlayer *player;
 
     void drawSnake(QPainter *painter);
